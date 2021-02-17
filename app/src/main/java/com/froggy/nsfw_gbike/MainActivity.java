@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
      * @Date : 2/15/21
      */
     private void test() {
-        // Local 端改檔案
+        // update remote test
         Log.d(TAG, "onCreate: ");
     }
 
