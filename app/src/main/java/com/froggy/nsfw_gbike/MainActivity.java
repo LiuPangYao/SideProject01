@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void test() {
         // update remote test
-        // test conflict1
+        // commit conflict log
         Log.d(TAG, "onCreate: ");
     }
 
