@@ -3,12 +3,32 @@ plugins {
 }
 
 android {
-    compileSdkVersion 29
+
+    // Creates a variable called keystorePropertiesFile, and initializes it to the
+    // keystore.properties file.
+    def keystorePropertiesFile = rootProject.file("keystore.properties")
+
+    // Initializes a new Properties() object called keystoreProperties.
+    def keystoreProperties = new Properties()
+
+    // Loads the keystore.properties file into the keystoreProperties object.
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+    signingConfigs {
+        release {
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+        }
+    }
+
+    compileSdkVersion 30
 
     defaultConfig {
         applicationId "com.froggy.nsfw_gbike"
-        minSdkVersion 23
-        targetSdkVersion 29
+        minSdkVersion 26
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
 
@@ -19,6 +39,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 
@@ -26,24 +47,27 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     flavorDimensions 'appstate'
+
     productFlavors {
         dev {
             dimension 'appstate'
             applicationIdSuffix 'dev'
             versionCode 1
             versionName '1.0'
-            targetSdkVersion 29
+            targetSdkVersion 30
             minSdkVersion 26
             manifestPlaceholders = [CHANNEL:"productA"]
         }
+
         stable {
             dimension 'appstate'
             applicationIdSuffix 'stable'
             versionCode 1
             versionName '1.0'
-            targetSdkVersion 27
-            minSdkVersion 29
+            targetSdkVersion 30
+            minSdkVersion 26
             manifestPlaceholders = [CHANNEL:"productB"]
         }
     }
