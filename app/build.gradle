@@ -33,6 +33,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField "String", "WEB_URL_CASH", "\"www.xxx.xxx\""
     }
 
     buildTypes {
@@ -48,8 +49,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    flavorDimensions 'appstate'
-
+    flavorDimensions 'appstate', "mode"
     productFlavors {
         dev {
             dimension 'appstate'
@@ -60,7 +60,6 @@ android {
             minSdkVersion 26
             manifestPlaceholders = [CHANNEL:"productA"]
         }
-
         stable {
             dimension 'appstate'
             applicationIdSuffix 'stable'
@@ -70,14 +69,41 @@ android {
             minSdkVersion 26
             manifestPlaceholders = [CHANNEL:"productB"]
         }
+        AmazonCashFlow {
+            dimension 'mode'
+            buildConfigField "String", "WEB_URL_CASH", "\"www.amazon.com\""
+            resValue 'string', 'app_name', 'Cash-Amazon'
+        }
+        FacebookCashFlow {
+            dimension 'mode'
+            buildConfigField "String", "WEB_URL_CASH", "\"www.facebook.com\""
+            resValue 'string', 'app_name', 'Cash-Facebook'
+        }
     }
 
     sourceSets {
         dev.java.srcDir 'dev'
         stable.java.srcDir 'stable'
-
         //dev.manifest.srcFile 'dev/AndroidManifest.xml'
         //stable.manifest.srcFile 'src/AndroidManifest.xml'
+    }
+
+    android {
+        variantFilter { variant ->
+            def buildState = variant.getFlavors().get(0).name
+            def mode = variant.getFlavors().get(1).name
+            def isRelease = variant.buildType.name.equals('release')
+            def isDebug = variant.buildType.name.equals('debug')
+
+            if ((buildState.equals('dev') && mode.equals('AmazonCashFlow') && isRelease)
+                    || (buildState.equals('dev') && mode.equals('AmazonCashFlow') && isDebug)) {
+                setIgnore(true)
+            }
+            if ((buildState.equals('stable') && mode.equals('FacebookCashFlow') && isRelease)
+                || (buildState.equals('stable') && mode.equals('FacebookCashFlow') && isDebug)) {
+                setIgnore(true)
+            }
+        }
     }
 }
 
