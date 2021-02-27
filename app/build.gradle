@@ -90,7 +90,7 @@ android {
 
     android {
         variantFilter { variant ->
-            def buildState = variant.getFlavors().get(0).name
+            /*def buildState = variant.getFlavors().get(0).name
             def mode = variant.getFlavors().get(1).name
             def isRelease = variant.buildType.name.equals('release')
             def isDebug = variant.buildType.name.equals('debug')
@@ -101,6 +101,17 @@ android {
             }
             if ((buildState.equals('stable') && mode.equals('FacebookCashFlow') && isRelease)
                 || (buildState.equals('stable') && mode.equals('FacebookCashFlow') && isDebug)) {
+                setIgnore(true)
+            }*/
+
+            def names = variant.flavors*.name
+            // To check for a certain build type, use variant.buildType.name == "<buildType>"
+            if (names.contains("dev") && names.contains("AmazonCashFlow")) {
+                // Gradle ignores any variants that satisfy the conditions above.
+                setIgnore(true)
+            }
+            if (names.contains("stable") && names.contains("FacebookCashFlow")) {
+                // Gradle ignores any variants that satisfy the conditions above.
                 setIgnore(true)
             }
         }
